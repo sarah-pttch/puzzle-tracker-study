@@ -13,7 +13,7 @@ class AuthRepository {
     }
 
     suspend fun signIn(email: String, password: String) {
-        supabase.auth.signUpWith(Email) {
+        supabase.auth.signInWith(Email) {
             this.email = email
             this.password = password
         }
@@ -24,4 +24,6 @@ class AuthRepository {
     }
 
     val sessionStatus = supabase.auth.sessionStatus
+    val currentUserId: String?
+        get() = supabase.auth.currentUserOrNull()?.id
 }
