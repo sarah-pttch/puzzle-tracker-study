@@ -128,7 +128,7 @@ fun MainScreen() {
                 arguments = listOf(navArgument("puzzleId") { type = NavType.StringType })
             ) { backStackEntry ->
                 val puzzleId = backStackEntry.arguments?.getString("puzzleId") ?: return@composable
-                PuzzleDetailsScreen(puzzleId = puzzleId)
+                PuzzleDetailsScreen(puzzleId = puzzleId, navController = navController)
             }
         }
     }

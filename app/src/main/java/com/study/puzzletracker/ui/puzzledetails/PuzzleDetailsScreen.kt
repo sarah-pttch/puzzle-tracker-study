@@ -6,8 +6,12 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
@@ -26,13 +30,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavController
 import com.study.puzzletracker.AppViewModelFactory
 import com.study.puzzletracker.PuzzleTrackerApp
 import com.study.puzzletracker.data.local.entity.Difficulty
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun PuzzleDetailsScreen(puzzleId: String) {
+fun PuzzleDetailsScreen(puzzleId: String, navController: NavController) {
     val context = LocalContext.current
     val app = context.applicationContext as PuzzleTrackerApp
     val viewModel: PuzzleDetailsViewModel = viewModel(factory = AppViewModelFactory(app, puzzleId = puzzleId))
@@ -44,7 +49,19 @@ fun PuzzleDetailsScreen(puzzleId: String) {
     var notes by remember(details) { mutableStateOf(details?.notes ?: "") }
 
     Scaffold(
-        topBar = { TopAppBar(title = { Text(puzzleCache?.name ?: "") }) }
+        topBar = {
+            TopAppBar(
+                title = { Text(puzzleCache?.name ?: "") },
+                navigationIcon = {
+                    IconButton(onClick = { navController.popBackStack() }) {
+                        Icon(
+                            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                            contentDescription = "Back to collections"
+                        )
+                    }
+                }
+            )
+        }
     ) { innerPadding ->
         Column(
             modifier = Modifier
