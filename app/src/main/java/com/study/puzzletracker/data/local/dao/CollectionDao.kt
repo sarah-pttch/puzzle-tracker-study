@@ -12,6 +12,9 @@ interface CollectionDao {
     @Query("SELECT * FROM collections ORDER BY name")
     fun getAll(): Flow<List<CollectionEntity>>
 
+    @Query("SELECT * FROM collections WHERE id = :collectionId")
+    fun getById(collectionId: Long): Flow<CollectionEntity?>
+
     @Insert
     suspend fun insert(collection: CollectionEntity): Long
 

@@ -1,5 +1,6 @@
 package com.study.puzzletracker.ui.collections
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -32,13 +33,16 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavController
+import com.study.puzzletracker.AppViewModelFactory
 import com.study.puzzletracker.PuzzleTrackerApp
+import com.study.puzzletracker.navigation.Screen
 
 @Composable
-fun CollectionsScreen() {
+fun CollectionsScreen(navController: NavController) {
     val context = LocalContext.current
     val app = context.applicationContext as PuzzleTrackerApp
-    val viewModel: CollectionsViewModel = viewModel(factory = CollectionsViewModelFactory(app))
+    val viewModel: CollectionsViewModel = viewModel(factory = AppViewModelFactory(app))
     val collections by viewModel.collections.collectAsState()
     var showCreateDialog by remember { mutableStateOf(false) }
 
@@ -55,7 +59,12 @@ fun CollectionsScreen() {
             } else {
                 LazyColumn(modifier = Modifier.fillMaxSize()) {
                     items(collections, key = { it.id }) { collection ->
-                        ListItem(headlineContent = { Text(collection.name) })
+                        ListItem(
+                            headlineContent = { Text(collection.name) },
+                            modifier = Modifier.clickable {
+                                navController.navigate(Screen.CollectionDetail.createRoute(collection.id))
+                            }
+                        )
                         HorizontalDivider()
                     }
                 }

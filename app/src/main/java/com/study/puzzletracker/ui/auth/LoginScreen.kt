@@ -21,13 +21,14 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.study.puzzletracker.AppViewModelFactory
 import com.study.puzzletracker.PuzzleTrackerApp
 
 @Composable
 fun LoginScreen() {
     val context = LocalContext.current
     val app = context.applicationContext as PuzzleTrackerApp
-    val viewModel: AuthViewModel = viewModel(factory = AuthViewModelFactory(app))
+    val viewModel: AuthViewModel = viewModel(factory = AppViewModelFactory(app))
 
     val uiState by viewModel.uiState.collectAsState()
 

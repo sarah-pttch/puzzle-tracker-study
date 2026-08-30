@@ -6,6 +6,7 @@ import kotlinx.coroutines.flow.Flow
 
 class CollectionRepository(private val dao: CollectionDao) {
     fun getAllCollections(): Flow<List<CollectionEntity>> = dao.getAll()
+    fun getCollectionById(collectionId: Long): Flow<CollectionEntity?> = dao.getById(collectionId)
 
     suspend fun createCollection(name: String, puzzlerId: String) {
         dao.insert(CollectionEntity(name = name, puzzlerId = puzzlerId))

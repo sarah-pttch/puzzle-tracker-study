@@ -13,8 +13,7 @@ import kotlinx.coroutines.launch
 class CollectionsViewModel(
     private val collectionRepository: CollectionRepository,
     private val authRepository: AuthRepository
-
-    ) : ViewModel() {
+) : ViewModel() {
     val collections: StateFlow<List<CollectionEntity>> = collectionRepository.getAllCollections()
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
 
