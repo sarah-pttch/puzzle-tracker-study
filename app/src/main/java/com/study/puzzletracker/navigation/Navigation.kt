@@ -37,7 +37,7 @@ sealed class Screen(val route: String) {
     object Home : Screen("home")
     object Collections : Screen("collections")
     object TimeTracker : Screen("timeTracker")
-    object CollectionDetail : Screen("collectionDetail") {
+    object CollectionDetail : Screen("collectionDetail/{collectionId}") {
         fun createRoute(collectionId: Long) = "collectionDetail/$collectionId"
     }
     object Search : Screen("search?collectionId={collectionId}") {
