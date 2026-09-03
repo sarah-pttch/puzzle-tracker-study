@@ -25,6 +25,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -34,6 +35,8 @@ import androidx.navigation.NavController
 import com.study.puzzletracker.AppViewModelFactory
 import com.study.puzzletracker.PuzzleTrackerApp
 import com.study.puzzletracker.data.local.entity.Difficulty
+import com.study.puzzletracker.navigation.Screen
+import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -41,6 +44,7 @@ fun PuzzleDetailsScreen(puzzleId: String, navController: NavController) {
     val context = LocalContext.current
     val app = context.applicationContext as PuzzleTrackerApp
     val viewModel: PuzzleDetailsViewModel = viewModel(factory = AppViewModelFactory(app, puzzleId = puzzleId))
+    val scope = rememberCoroutineScope()
 
     val puzzleCache by viewModel.puzzleCache.collectAsState()
     val details by viewModel.details.collectAsState()
@@ -56,7 +60,7 @@ fun PuzzleDetailsScreen(puzzleId: String, navController: NavController) {
                     IconButton(onClick = { navController.popBackStack() }) {
                         Icon(
                             imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                            contentDescription = "Back to collections"
+                            contentDescription = "Back to collection"
                         )
                     }
                 }
@@ -111,6 +115,16 @@ fun PuzzleDetailsScreen(puzzleId: String, navController: NavController) {
                 modifier = Modifier.fillMaxWidth()
             ) {
                 Text("Save")
+            }
+            Spacer(Modifier.height(16.dp))
+
+            Button(onClick = {
+                scope.launch {
+                    val attemptId = viewModel.createAttempt(puzzleId)
+                    navController.navigate(Screen.AttemptTracking.createRoute(attemptId))
+                }
+            }) {
+                Text("Start attempt")
             }
         }
     }

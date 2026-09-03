@@ -54,4 +54,13 @@ interface PuzzleDetailsDao {
         WHERE puzzleId = :puzzleId
     """)
     suspend fun updateDetails(puzzleId: String, difficulty: Difficulty?, tags: String?, notes: String?)
+
+    @Query("SELECT id FROM puzzle_details WHERE puzzleId = :puzzleId")
+    suspend fun getDetailsIdForPuzzle(puzzleId: String): Long?
+
+    @Query("""
+        SELECT pc.* FROM puzzle_cache pc
+        INNER JOIN puzzle_details pd ON puzzleId = pc.id
+    """)
+    fun getAllPuzzlesWithDetails(): Flow<List<PuzzleCacheEntity>>
 }

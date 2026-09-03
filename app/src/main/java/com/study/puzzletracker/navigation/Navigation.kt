@@ -22,6 +22,7 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.study.puzzletracker.R
+import com.study.puzzletracker.ui.attempttracking.AttemptTrackingScreen
 import com.study.puzzletracker.ui.collectiondetails.CollectionDetailsScreen
 import com.study.puzzletracker.ui.collections.CollectionsScreen
 import com.study.puzzletracker.ui.home.HomeScreen
@@ -47,6 +48,10 @@ sealed class Screen(val route: String) {
 
     object PuzzleDetails : Screen("puzzleDetails/{puzzleId}") {
         fun createRoute(puzzleId: String) = "puzzleDetails/$puzzleId"
+    }
+
+    object AttemptTracking: Screen("attemptTracking/{attemptId}") {
+        fun createRoute(attemptId: Long) = "attemptTracking/$attemptId"
     }
 }
 
@@ -103,7 +108,7 @@ fun MainScreen() {
         ) {
             composable(Screen.Home.route) { HomeScreen() }
             composable(Screen.Collections.route) { CollectionsScreen(navController) }
-            composable(Screen.TimeTracker.route) { TimeTrackerScreen() }
+            composable(Screen.TimeTracker.route) { TimeTrackerScreen(navController) }
             composable(
                 route = Screen.Search.route,
                 arguments = listOf(
@@ -129,6 +134,13 @@ fun MainScreen() {
             ) { backStackEntry ->
                 val puzzleId = backStackEntry.arguments?.getString("puzzleId") ?: return@composable
                 PuzzleDetailsScreen(puzzleId = puzzleId, navController = navController)
+            }
+            composable(
+                route = Screen.AttemptTracking.route,
+                arguments = listOf(navArgument("attemptId") { type = NavType.LongType })
+            ) { backStackEntry ->
+                val attemptId = backStackEntry.arguments?.getLong("attemptId") ?: return@composable
+                AttemptTrackingScreen(attemptId = attemptId, navController = navController)
             }
         }
     }
