@@ -28,6 +28,7 @@ import com.study.puzzletracker.ui.collections.CollectionsScreen
 import com.study.puzzletracker.ui.home.HomeScreen
 import com.study.puzzletracker.ui.puzzledetails.PuzzleDetailsScreen
 import com.study.puzzletracker.ui.search.SearchScreen
+import com.study.puzzletracker.ui.statistics.StatisticsScreen
 import com.study.puzzletracker.ui.timetracker.TimeTrackerScreen
 
 sealed class IconSource {
@@ -38,6 +39,7 @@ sealed class Screen(val route: String) {
     object Home : Screen("home")
     object Collections : Screen("collections")
     object TimeTracker : Screen("timeTracker")
+    object Statistics : Screen("statistics")
     object CollectionDetail : Screen("collectionDetail/{collectionId}") {
         fun createRoute(collectionId: Long) = "collectionDetail/$collectionId"
     }
@@ -64,7 +66,8 @@ data class BottomNavItem(
 val bottomNavItems = listOf(
     BottomNavItem(Screen.Home, "Home", IconSource.Vector(Icons.Default.Home)),
     BottomNavItem(Screen.Collections, "Collections", IconSource.Drawable(R.drawable.outline_folder_24)),
-    BottomNavItem(Screen.TimeTracker, "Time Tracker", IconSource.Drawable(R.drawable.outline_timer_24))
+    BottomNavItem(Screen.TimeTracker, "Time Tracker", IconSource.Drawable(R.drawable.outline_timer_24)),
+    BottomNavItem(Screen.Statistics, "Statistics", IconSource.Drawable(R.drawable.outline_insert_chart_24))
 )
 
 @Composable
@@ -109,6 +112,7 @@ fun MainScreen() {
             composable(Screen.Home.route) { HomeScreen() }
             composable(Screen.Collections.route) { CollectionsScreen(navController) }
             composable(Screen.TimeTracker.route) { TimeTrackerScreen(navController) }
+            composable(Screen.Statistics.route) { StatisticsScreen() }
             composable(
                 route = Screen.Search.route,
                 arguments = listOf(

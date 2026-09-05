@@ -71,4 +71,12 @@ interface AttemptDao {
         WHERE attempts.id = :attemptId
     """)
     fun getByIdWithPuzzle(attemptId: Long): Flow<AttemptWithPuzzle?>
+
+    @Query("""
+        SELECT completionTimeSeconds FROM attempts
+        INNER JOIN puzzle_details pd ON pd.id = attempts.puzzleDetailsId
+        WHERE pd.puzzleId = :puzzleId AND attempts.status = 'FINISHED'
+        ORDER BY attempts.startedAt ASC
+    """)
+    fun getCompletionTimesForPuzzle(puzzleId: String): Flow<List<Long>>
 }

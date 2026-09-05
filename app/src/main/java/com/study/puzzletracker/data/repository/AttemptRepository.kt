@@ -4,6 +4,7 @@ import com.study.puzzletracker.data.local.dao.AttemptDao
 import com.study.puzzletracker.data.local.dao.PuzzleDetailsDao
 import com.study.puzzletracker.data.local.entity.AttemptEntity
 import com.study.puzzletracker.data.local.entity.AttemptMode
+import com.study.puzzletracker.data.local.entity.AttemptStatus
 
 class AttemptRepository(
     private val attemptDao: AttemptDao,
@@ -18,9 +19,30 @@ class AttemptRepository(
         )
     }
 
+    suspend fun addAttemptManually(
+        puzzleId: String, startedAt: Long, completionTimeSeconds: Long,
+        mode: AttemptMode?, numberOfPuzzlers: Int?
+    ) {
+        val detailsId = requireNotNull(puzzleDetailsDao.getDetailsIdForPuzzle(puzzleId)) {
+            "No PuzzleDetails found for puzzle $puzzleId - puzzle must be added to a collection first"
+        }
+        attemptDao.insert(
+            AttemptEntity(
+                puzzleDetailsId = detailsId,
+                status = AttemptStatus.FINISHED,
+                startedAt = startedAt,
+                completionTimeSeconds = completionTimeSeconds,
+                mode = mode,
+                numberOfPuzzlers = numberOfPuzzlers
+            )
+        )
+    }
+
     fun getInProgressAttempts() = attemptDao.getInProgressAttemptsWithPuzzle()
 
     fun getAttempt(attemptId: Long) = attemptDao.getByIdWithPuzzle(attemptId)
+
+    fun getCompletionTimesForPuzzle(puzzleId: String) = attemptDao.getCompletionTimesForPuzzle(puzzleId)
 
     suspend fun pause(attemptId: Long) = attemptDao.pause(attemptId)
 
