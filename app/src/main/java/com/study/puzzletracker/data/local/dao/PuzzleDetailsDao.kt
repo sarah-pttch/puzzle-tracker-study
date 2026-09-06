@@ -58,6 +58,13 @@ interface PuzzleDetailsDao {
     fun getPuzzleCount(): Flow<Int>
 
     @Query("""
+        SELECT pc.* FROM puzzle_cache pc
+        INNER JOIN puzzle_details pd ON pd.puzzleId = pc.id
+        WHERE pc.name LIKE '%' || :query || '%'
+    """)
+    fun searchCollectionPuzzles(query: String): Flow<List<PuzzleCacheEntity>>
+
+    @Query("""
         UPDATE puzzle_details
         SET difficulty = :difficulty, tags = :tags, notes = :notes
         WHERE puzzleId = :puzzleId

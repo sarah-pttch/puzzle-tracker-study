@@ -6,6 +6,7 @@ import com.study.puzzletracker.ui.attempttracking.AttemptTrackingViewModel
 import com.study.puzzletracker.ui.auth.AuthViewModel
 import com.study.puzzletracker.ui.collectiondetails.CollectionDetailsViewModel
 import com.study.puzzletracker.ui.collections.CollectionsViewModel
+import com.study.puzzletracker.ui.home.HomeViewModel
 import com.study.puzzletracker.ui.puzzledetails.PuzzleDetailsViewModel
 import com.study.puzzletracker.ui.search.SearchViewModel
 import com.study.puzzletracker.ui.statistics.StatisticsViewModel
@@ -62,6 +63,9 @@ class AppViewModelFactory(
                     container.puzzleDetailsDao,
                     container.attemptRepository
                 )
+
+            HomeViewModel::class.java ->
+                HomeViewModel(container.puzzleDetailsDao)
 
             else -> throw IllegalArgumentException("Unknown ViewModel class: ${modelClass.name}")
         } as T

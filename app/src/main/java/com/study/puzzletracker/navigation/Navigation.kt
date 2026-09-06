@@ -109,7 +109,7 @@ fun MainScreen() {
             startDestination = Screen.Home.route,
             modifier = Modifier.padding(innerPadding)
         ) {
-            composable(Screen.Home.route) { HomeScreen() }
+            composable(Screen.Home.route) { HomeScreen(navController) }
             composable(Screen.Collections.route) { CollectionsScreen(navController) }
             composable(Screen.TimeTracker.route) { TimeTrackerScreen(navController) }
             composable(Screen.Statistics.route) { StatisticsScreen() }
