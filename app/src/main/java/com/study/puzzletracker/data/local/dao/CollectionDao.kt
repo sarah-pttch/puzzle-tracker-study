@@ -15,6 +15,9 @@ interface CollectionDao {
     @Query("SELECT * FROM collections WHERE id = :collectionId")
     fun getById(collectionId: Long): Flow<CollectionEntity?>
 
+    @Query("SELECT COUNT(*) FROM collections")
+    fun getCollectionCount(): Flow<Int>
+
     @Insert
     suspend fun insert(collection: CollectionEntity): Long
 

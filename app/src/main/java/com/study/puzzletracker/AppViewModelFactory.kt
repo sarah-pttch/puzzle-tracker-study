@@ -8,6 +8,7 @@ import com.study.puzzletracker.ui.collectiondetails.CollectionDetailsViewModel
 import com.study.puzzletracker.ui.collections.CollectionsViewModel
 import com.study.puzzletracker.ui.puzzledetails.PuzzleDetailsViewModel
 import com.study.puzzletracker.ui.search.SearchViewModel
+import com.study.puzzletracker.ui.statistics.StatisticsViewModel
 import com.study.puzzletracker.ui.timetracker.TimeTrackerViewModel
 
 class AppViewModelFactory(
@@ -52,6 +53,13 @@ class AppViewModelFactory(
             AttemptTrackingViewModel::class.java ->
                 AttemptTrackingViewModel(
                     requireNotNull(attemptId) { "attemptId required for AttemptTrackingViewModel" },
+                    container.attemptRepository
+                )
+
+            StatisticsViewModel::class.java ->
+                StatisticsViewModel(
+                    container.collectionRepository,
+                    container.puzzleDetailsDao,
                     container.attemptRepository
                 )
 

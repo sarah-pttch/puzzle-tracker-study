@@ -49,6 +49,15 @@ interface PuzzleDetailsDao {
     fun getDetails(puzzleId: String): Flow<PuzzleDetailsEntity?>
 
     @Query("""
+        SELECT pc.* FROM puzzle_cache pc
+        INNER JOIN puzzle_details pd ON puzzleId = pc.id
+    """)
+    fun getAllPuzzlesWithDetails(): Flow<List<PuzzleCacheEntity>>
+
+    @Query("SELECT COUNT(*) FROM puzzle_cache")
+    fun getPuzzleCount(): Flow<Int>
+
+    @Query("""
         UPDATE puzzle_details
         SET difficulty = :difficulty, tags = :tags, notes = :notes
         WHERE puzzleId = :puzzleId
@@ -57,10 +66,4 @@ interface PuzzleDetailsDao {
 
     @Query("SELECT id FROM puzzle_details WHERE puzzleId = :puzzleId")
     suspend fun getDetailsIdForPuzzle(puzzleId: String): Long?
-
-    @Query("""
-        SELECT pc.* FROM puzzle_cache pc
-        INNER JOIN puzzle_details pd ON puzzleId = pc.id
-    """)
-    fun getAllPuzzlesWithDetails(): Flow<List<PuzzleCacheEntity>>
 }

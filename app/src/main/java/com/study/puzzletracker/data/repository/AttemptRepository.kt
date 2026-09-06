@@ -10,6 +10,14 @@ class AttemptRepository(
     private val attemptDao: AttemptDao,
     private val puzzleDetailsDao: PuzzleDetailsDao
 ) {
+    fun getInProgressAttempts() = attemptDao.getInProgressAttemptsWithPuzzle()
+
+    fun getAttempt(attemptId: Long) = attemptDao.getByIdWithPuzzle(attemptId)
+
+    fun getCompletionTimesForPuzzle(puzzleId: String) = attemptDao.getCompletionTimesForPuzzle(puzzleId)
+
+    fun getAllFinishedAttemptsWithPuzzle() = attemptDao.getAllFinishedAttemptsWithPuzzle()
+
     suspend fun createAttempt(puzzleId: String): Long {
         val detailsId = requireNotNull(puzzleDetailsDao.getDetailsIdForPuzzle(puzzleId)) {
             "No PuzzleDetails found for puzzle $puzzleId - puzzle must be added to a collection first"
@@ -37,12 +45,6 @@ class AttemptRepository(
             )
         )
     }
-
-    fun getInProgressAttempts() = attemptDao.getInProgressAttemptsWithPuzzle()
-
-    fun getAttempt(attemptId: Long) = attemptDao.getByIdWithPuzzle(attemptId)
-
-    fun getCompletionTimesForPuzzle(puzzleId: String) = attemptDao.getCompletionTimesForPuzzle(puzzleId)
 
     suspend fun pause(attemptId: Long) = attemptDao.pause(attemptId)
 
