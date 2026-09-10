@@ -1,5 +1,6 @@
 package com.study.puzzletracker.data.repository
 
+import com.study.puzzletracker.data.remote.dto.NewPuzzleDto
 import com.study.puzzletracker.data.remote.dto.PuzzleDto
 import com.study.puzzletracker.data.remote.supabase
 import io.github.jan.supabase.postgrest.postgrest
@@ -14,8 +15,36 @@ class SearchRepository {
                         ilike("name", "%$query%")
                         ilike("barcode", "%$query%")
                     }
+                    isIn("status", listOf("verified", "pending_verification"))
                 }
             }
             .decodeList<PuzzleDto>()
+    }
+
+    suspend fun createPuzzle(
+        name: String,
+        barcode: String?,
+        pieceCount: Int,
+        manufacturer: String,
+        publicationYear: Int?,
+        toGlobalCollection: Boolean,
+        submittedBy: String?
+    ): PuzzleDto {
+        val status = if (toGlobalCollection) "pending_verification" else "personal"
+        return supabase.postgrest["puzzles"]
+            .insert(
+                NewPuzzleDto(
+                    name = name,
+                    barcode = barcode,
+                    pieceCount = pieceCount,
+                    manufacturer = manufacturer,
+                    publicationYear = publicationYear,
+                    status = status,
+                    submittedBy = submittedBy
+                )
+            ) {
+                select()
+            }
+            .decodeSingle<PuzzleDto>()
     }
 }

@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.study.puzzletracker.data.local.dao.PuzzleDetailsDao
 import com.study.puzzletracker.data.remote.dto.PuzzleDto
+import com.study.puzzletracker.data.repository.AuthRepository
 import com.study.puzzletracker.data.repository.SearchRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -21,6 +22,7 @@ import kotlinx.coroutines.launch
 class SearchViewModel(
     private val searchRepository: SearchRepository,
     private val puzzleDetailsDao: PuzzleDetailsDao,
+    private val authRepository: AuthRepository
 ) : ViewModel() {
 
     private val _query = MutableStateFlow("")
@@ -57,5 +59,20 @@ class SearchViewModel(
                 manufacturer = puzzle.manufacturer
             )
         }
+    }
+
+    suspend fun createPuzzle(
+        name: String, barcode: String?, pieceCount: Int, manufacturer: String,
+        publicationYear: Int?, toGlobalCollection: Boolean
+    ): PuzzleDto {
+        return searchRepository.createPuzzle(
+            name = name,
+            barcode = barcode,
+            pieceCount = pieceCount,
+            manufacturer = manufacturer,
+            publicationYear = publicationYear,
+            toGlobalCollection = toGlobalCollection,
+            submittedBy = authRepository.currentUserId
+        )
     }
 }

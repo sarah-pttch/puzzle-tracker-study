@@ -29,7 +29,11 @@ class AppViewModelFactory(
                 CollectionsViewModel(container.collectionRepository, container.authRepository)
 
             SearchViewModel::class.java ->
-                SearchViewModel(container.searchRepository, container.puzzleDetailsDao)
+                SearchViewModel(
+                    container.searchRepository,
+                    container.puzzleDetailsDao,
+                    container.authRepository
+                )
 
             CollectionDetailsViewModel::class.java ->
                 CollectionDetailsViewModel(

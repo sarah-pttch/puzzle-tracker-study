@@ -68,7 +68,7 @@ fun PuzzleDetailsScreen(puzzleId: String, navController: NavController) {
     var difficulty by remember(details) { mutableStateOf(details?.difficulty) }
     var tags by remember(details) { mutableStateOf(details?.tags ?: "") }
     var notes by remember(details) { mutableStateOf(details?.notes ?: "") }
-    var showAddAttemptDialog by remember {mutableStateOf(false)}
+    var showAddAttemptDialog by remember { mutableStateOf(false) }
 
     Scaffold(
         topBar = {
