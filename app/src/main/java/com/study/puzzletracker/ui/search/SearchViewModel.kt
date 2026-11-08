@@ -39,7 +39,7 @@ class SearchViewModel(
             if (q.length < 3) {
                 flowOf(emptyList())
             } else {
-                flow { emit(searchRepository.searchPuzzles(q)) }
+                flow { emit(searchRepository.searchPuzzles(q, authRepository.currentUserId)) }
             }
         }
         .onEach { _isLoading.value = false }

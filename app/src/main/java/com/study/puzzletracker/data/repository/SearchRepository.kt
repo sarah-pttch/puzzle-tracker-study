@@ -6,16 +6,26 @@ import com.study.puzzletracker.data.remote.supabase
 import io.github.jan.supabase.postgrest.postgrest
 
 class SearchRepository {
-    suspend fun searchPuzzles(query: String): List<PuzzleDto> {
+    suspend fun searchPuzzles(query: String, userId: String?): List<PuzzleDto> {
         if (query.isBlank()) return emptyList()
         return supabase.postgrest["puzzles"]
             .select {
                 filter {
-                    or {
-                        ilike("name", "%$query%")
-                        ilike("barcode", "%$query%")
+                    and {
+                        or {
+                            ilike("name", "%$query%")
+                            ilike("barcode", "%$query%")
+                        }
+                        or {
+                            isIn("status", listOf("verified", "pending_verification"))
+                            if (userId != null) {
+                                and {
+                                    eq("status", "personal")
+                                    eq("submitted_by", userId)
+                                }
+                            }
+                        }
                     }
-                    isIn("status", listOf("verified", "pending_verification"))
                 }
             }
             .decodeList<PuzzleDto>()
