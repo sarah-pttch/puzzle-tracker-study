@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -17,13 +18,21 @@ import io.github.jan.supabase.auth.status.SessionStatus
 fun App() {
     val context = LocalContext.current
     val app = context.applicationContext as PuzzleTrackerApp
-        val sessionStatus by app.container.authRepository.sessionStatus.collectAsState()
+    val authRepository = app.container.authRepository
+    val sessionStatus by authRepository.sessionStatus.collectAsState()
 
+    LaunchedEffect(sessionStatus) {
+        when (sessionStatus) {
+            is SessionStatus.Authenticated -> authRepository.rememberUser()
+            is SessionStatus.NotAuthenticated -> authRepository.forgetUser()
+            else -> {}
+        }
+    }
     when (sessionStatus) {
-        is SessionStatus.Authenticated -> MainScreen()
+        is SessionStatus.Authenticated,
+        is SessionStatus.RefreshFailure -> MainScreen()
         is SessionStatus.NotAuthenticated -> LoginScreen()
-        is SessionStatus.Initializing -> LoadingScreen()
-        is SessionStatus.RefreshFailure -> LoginScreen()
+        SessionStatus.Initializing -> LoadingScreen()
     }
 }
 

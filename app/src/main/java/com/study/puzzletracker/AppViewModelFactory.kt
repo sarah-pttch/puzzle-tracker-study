@@ -23,7 +23,7 @@ class AppViewModelFactory(
         val container = app.container
         return when (modelClass) {
             AuthViewModel::class.java ->
-                AuthViewModel(container.authRepository)
+                AuthViewModel(container.authRepository, container.networkMonitor)
 
             CollectionsViewModel::class.java ->
                 CollectionsViewModel(container.collectionRepository, container.authRepository)

@@ -18,7 +18,7 @@ class AppContainer(context: Context) {
         .fallbackToDestructiveMigration(true)
         .build()
 
-    val authRepository = AuthRepository()
+    val authRepository = AuthRepository(context)
     val collectionRepository = CollectionRepository(database.collectionDao())
     val searchRepository = SearchRepository()
     val puzzleDetailsDao = database.puzzleDetailsDao()
