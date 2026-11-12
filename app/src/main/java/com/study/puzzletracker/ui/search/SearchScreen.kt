@@ -55,8 +55,7 @@ fun SearchScreen(collectionId: Long?, navController: NavController) {
     val scope = rememberCoroutineScope()
 
     val query by viewModel.query.collectAsState()
-    val isLoading by viewModel.isLoading.collectAsState()
-    val results by viewModel.results.collectAsState()
+    val uiState by viewModel.uiState.collectAsState()
     var showCollectionPicker by remember { mutableStateOf<PuzzleDto?>(null) }
     var showNewPuzzleDialog by remember { mutableStateOf(false) }
 
@@ -68,13 +67,8 @@ fun SearchScreen(collectionId: Long?, navController: NavController) {
             modifier = Modifier.fillMaxWidth().padding(16.dp)
         )
 
-        when {
-            isLoading -> {
-                Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                    CircularProgressIndicator()
-                }
-            }
-            query.length < 3 -> {
+        when (val state = uiState) {
+            SearchUiState.Idle -> {
                 Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                     Text(
                         "Type at least 3 characters to search",
@@ -82,37 +76,59 @@ fun SearchScreen(collectionId: Long?, navController: NavController) {
                     )
                 }
             }
-            results.isEmpty() -> {
-                Column(
-                    Modifier.fillMaxSize(),
-                    verticalArrangement = Arrangement.Center,
-                    horizontalAlignment = Alignment.CenterHorizontally
-                ) {
-                    Text(
-                        "No puzzles found for \"$query\"",
-                        style = MaterialTheme.typography.bodyMedium
-                    )
-                    Spacer(Modifier.height(16.dp))
-                    OutlinedButton(onClick = { showNewPuzzleDialog = true }) {
-                        Text("Add as a new puzzle")
-                    }
+            SearchUiState.Loading -> {
+                Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                    CircularProgressIndicator()
                 }
             }
-            else -> {
-                LazyColumn {
-                    items(results, key = { it.id }) { puzzle ->
-                        ListItem(
-                            headlineContent = { Text(puzzle.name) },
-                            supportingContent = {Text("${puzzle.manufacturer} - ${puzzle.pieceCount} pcs") },
-                            modifier = Modifier.clickable {
-                                if (collectionId != null) {
-                                    viewModel.addPuzzleToCollection(collectionId, puzzle)
-                                    navController.popBackStack()
-                                } else {
-                                    showCollectionPicker = puzzle
-                                }
-                            }
+            SearchUiState.Offline -> {
+                Box(Modifier.fillMaxSize().padding(24.dp), contentAlignment = Alignment.Center) {
+                    Text(
+                        "Searching the global puzzle collection requires an internet connection.",
+                        style = MaterialTheme.typography.bodyMedium
+                    )
+                }
+            }
+            SearchUiState.Failed -> {
+                Box(Modifier.fillMaxSize().padding(24.dp), contentAlignment = Alignment.Center) {
+                    Text(
+                        "Something went wrong while searching. Please try again.",
+                        style = MaterialTheme.typography.bodyMedium
+                    )
+                }
+            }
+            is SearchUiState.Results -> {
+                if (state.puzzles.isEmpty()) {
+                    Column(
+                        Modifier.fillMaxSize(),
+                        verticalArrangement = Arrangement.Center,
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        Text(
+                            "No puzzles found for \"$query\"",
+                            style = MaterialTheme.typography.bodyMedium
                         )
+                        Spacer(Modifier.height(16.dp))
+                        OutlinedButton(onClick = { showNewPuzzleDialog = true }) {
+                            Text("Add as a new puzzle")
+                        }
+                    }
+                } else {
+                    LazyColumn {
+                        items(state.puzzles, key = { it.id }) { puzzle ->
+                            ListItem(
+                                headlineContent = { Text(puzzle.name) },
+                                supportingContent = {Text("${puzzle.manufacturer} - ${puzzle.pieceCount} pcs") },
+                                modifier = Modifier.clickable {
+                                    if (collectionId != null) {
+                                        viewModel.addPuzzleToCollection(collectionId, puzzle)
+                                        navController.popBackStack()
+                                    } else {
+                                        showCollectionPicker = puzzle
+                                    }
+                                }
+                            )
+                        }
                     }
                 }
             }

@@ -32,7 +32,8 @@ class AppViewModelFactory(
                 SearchViewModel(
                     container.searchRepository,
                     container.puzzleDetailsDao,
-                    container.authRepository
+                    container.authRepository,
+                    container.networkMonitor
                 )
 
             CollectionDetailsViewModel::class.java ->

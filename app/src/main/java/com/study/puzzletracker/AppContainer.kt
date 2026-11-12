@@ -2,6 +2,7 @@ package com.study.puzzletracker
 
 import android.content.Context
 import androidx.room.Room
+import com.study.puzzletracker.data.NetworkMonitor
 import com.study.puzzletracker.data.local.AppDatabase
 import com.study.puzzletracker.data.repository.AttemptRepository
 import com.study.puzzletracker.data.repository.AuthRepository
@@ -21,6 +22,6 @@ class AppContainer(context: Context) {
     val collectionRepository = CollectionRepository(database.collectionDao())
     val searchRepository = SearchRepository()
     val puzzleDetailsDao = database.puzzleDetailsDao()
-
     val attemptRepository = AttemptRepository(database.attemptDao(), database.puzzleDetailsDao())
+    val networkMonitor = NetworkMonitor(context)
 }
